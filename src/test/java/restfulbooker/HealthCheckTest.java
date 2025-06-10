@@ -22,7 +22,7 @@ public class HealthCheckTest extends BaseTest {
                 statusCode(201);
     }
 
-    //@Test
+    @Test
     public void headersAndCookiesTest() {
         Header someHeader = new Header("some_name", "Some_value");
         spec.header(someHeader);
