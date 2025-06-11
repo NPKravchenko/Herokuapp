@@ -1,16 +1,25 @@
 package restfulbooker;
 
 import com.herocuapp.restfulbooker.BaseTest;
+import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Booking API")
+@Feature("Partial Update Booking")
 public class PartialUpdateBookingTest extends BaseTest {
-    @Test
+    @Test(description = "Частичное обновление бронирования и проверка изменённых и неизменённых полей")
+    @Story("Частичное обновление полей бронирования")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Обновляем firstname и даты бронирования, проверяем, что остальные поля остались без изменений")
     public void partialUpdateBookingTest() {
         // Create booking
         Response responseCreate = createBooking();
@@ -30,7 +39,9 @@ public class PartialUpdateBookingTest extends BaseTest {
         body.put("bookingdates", bookingdates);
 
         // PartialUpdate booking
-        Response responseUpdate = RestAssured.given().auth().preemptive().basic("admin", "password123").contentType(ContentType.JSON).body(body.toString())
+        Response responseUpdate = RestAssured.given()
+                .filter(new AllureRestAssured())
+                .auth().preemptive().basic("admin", "password123").contentType(ContentType.JSON).body(body.toString())
                 .patch("https://restful-booker.herokuapp.com/booking/" + bookingid);
         responseUpdate.print();
 

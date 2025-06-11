@@ -1,17 +1,26 @@
 package restfulbooker;
 
 import com.herocuapp.restfulbooker.BaseTest;
+import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Booking API")
+@Feature("Get Booking")
 public class GetBookingTest extends BaseTest {
-    @Test
+    @Test(description = "Получение бронирования по ID с проверкой всех полей")
+    @Story("Получение одного бронирования")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Создаётся бронирование, затем по его ID получаем детали бронирования и проверяем все поля ответа")
     public void getBookingTest() {
         // Create booking
         Response responseCreate = createBooking();
@@ -21,7 +30,9 @@ public class GetBookingTest extends BaseTest {
         spec.pathParam("bookingId", responseCreate.jsonPath().getInt("bookingid"));
 
         // Get response with booking
-        Response response = RestAssured.given(spec).get("/booking/{bookingId}");
+        Response response = RestAssured.given(spec)
+                .filter(new AllureRestAssured())
+                .get("/booking/{bookingId}");
         response.print();
 
         // Verify response 200

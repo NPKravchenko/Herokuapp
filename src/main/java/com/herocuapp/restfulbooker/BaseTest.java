@@ -7,13 +7,17 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeMethod;
+import io.qameta.allure.restassured.AllureRestAssured;
 
 public class BaseTest {
     protected RequestSpecification spec;
     @BeforeMethod
     public void setUp(){
         spec = new RequestSpecBuilder().
-                setBaseUri("https://restful-booker.herokuapp.com").build();
+                setBaseUri("https://restful-booker.herokuapp.com")
+                .addFilter(new AllureRestAssured()) // 👈 ключевая строка
+                .build();
+        //RestAssured.filters(new AllureRestAssured());
     }
 
     protected Response createBooking() {

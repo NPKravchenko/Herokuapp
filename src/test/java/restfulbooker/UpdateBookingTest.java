@@ -1,7 +1,10 @@
 package restfulbooker;
 
+import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import org.json.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -11,8 +14,14 @@ import io.restassured.response.Response;
 
 import com.herocuapp.restfulbooker.BaseTest;
 
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Booking API")
+@Feature("Update Booking")
 public class UpdateBookingTest extends BaseTest{
-    @Test
+    @Test(description = "Полное обновление бронирования с проверкой всех полей в ответе")
+    @Story("Обновление бронирования")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Обновляет все поля бронирования и проверяет, что данные в ответе совпадают с запросом")
     public void updateBookingTest() {
         // Create booking
         Response responseCreate = createBooking();
@@ -35,7 +44,9 @@ public class UpdateBookingTest extends BaseTest{
         body.put("additionalneeds", "Baby crib");
 
         // Update booking
-        Response responseUpdate = RestAssured.given().auth().preemptive().basic("admin", "password123").contentType(ContentType.JSON).body(body.toString())
+        Response responseUpdate = RestAssured.given()
+                .filter(new AllureRestAssured())
+                .auth().preemptive().basic("admin", "password123").contentType(ContentType.JSON).body(body.toString())
                 .put("https://restful-booker.herokuapp.com/booking/" + bookingid);
         responseUpdate.print();
 

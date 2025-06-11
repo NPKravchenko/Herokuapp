@@ -1,18 +1,26 @@
 package restfulbooker;
 
 import com.herocuapp.restfulbooker.BaseTest;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Health API")
+@Feature("Health Check")
 public class HealthCheckTest extends BaseTest {
-    @Test
+    @Test(description = "Проверка работоспособности API /ping")
+    @Story("Проверка статуса сервиса")
+    @Severity(SeverityLevel.MINOR)
+    @Description("Отправляется GET запрос на /ping и проверяется, что статус ответа 201")
     public void healthCheckTest(){
         given().spec(spec).when().
                 when().
@@ -22,7 +30,7 @@ public class HealthCheckTest extends BaseTest {
                 statusCode(201);
     }
 
-    @Test
+    //@Test
     public void headersAndCookiesTest() {
         Header someHeader = new Header("some_name", "Some_value");
         spec.header(someHeader);

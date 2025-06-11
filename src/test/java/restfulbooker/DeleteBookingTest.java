@@ -1,13 +1,23 @@
 package restfulbooker;
 
 import com.herocuapp.restfulbooker.BaseTest;
+import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Booking API")
+@Feature("Delete Booking")
 public class DeleteBookingTest extends BaseTest {
-    @Test
+
+    @Test(description = "Удаление бронирования и проверка его отсутствия")
+    @Story("Удаление существующего бронирования по ID")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Создаёт бронирование, удаляет его и проверяет, что бронирование удалено (возвращается 'Not Found').")
     public void deleteBookingTest() {
         // Create booking
         Response responseCreate = createBooking();
@@ -17,8 +27,9 @@ public class DeleteBookingTest extends BaseTest {
         int bookingid = responseCreate.jsonPath().getInt("bookingid");
 
         // delete booking
-        Response responseDelete = RestAssured.given(spec).
-                auth().preemptive().
+        Response responseDelete = RestAssured.given(spec)
+                .filter(new AllureRestAssured())
+                .auth().preemptive().
                 basic("admin", "password123").
                 delete("/booking/" + bookingid);
         responseDelete.print();
