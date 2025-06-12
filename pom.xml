@@ -68,7 +68,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>target/allure serve target/allure-results-results</directory>
+                            <directory>target/allure-results</directory>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                     </filesets>
@@ -79,6 +79,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+                    <testFailureIgnore>false</testFailureIgnore>
+                    <systemPropertyVariables>
+                        <allure.results.directory>target/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
 <!--                    <groups>Booking,Smoke,Regression,Health</groups>-->
 <!--                    <suiteXmlFiles>-->
 <!--                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>-->
