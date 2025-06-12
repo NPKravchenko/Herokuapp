@@ -68,7 +68,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>target/allure-results</directory>
+                            <directory>target/allure serve target/allure-results-results</directory>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                     </filesets>

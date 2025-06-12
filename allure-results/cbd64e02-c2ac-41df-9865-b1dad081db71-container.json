@@ -1,1 +1,0 @@
-{"uuid":"cbd64e02-c2ac-41df-9865-b1dad081db71","name":"com.herocuapp.restfulbooker.DeleteBookingTest","children":["001fe0cb-d263-433f-80f9-f91d8e8d317a"],"befores":[{"name":"setUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1749742264504,"stop":1749742264504}],"afters":[],"start":1749742260066,"stop":1749742268288}

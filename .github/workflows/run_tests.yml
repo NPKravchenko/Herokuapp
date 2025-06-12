@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       test_group:
-        description: 'Выбери группу тестов для запуска'
+        description: 'Select test you want to execute'
         required: true
         default: 'all'
         type: choice
