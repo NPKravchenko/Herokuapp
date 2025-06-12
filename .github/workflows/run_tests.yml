@@ -14,7 +14,6 @@ on:
           - Booking
           - Smoke
           - Regression
-          - API
 
 jobs:
   run-tests:

@@ -7,13 +7,14 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import io.qameta.allure.restassured.AllureRestAssured;
+import org.testng.annotations.*;
 
 public class BaseTest {
     protected RequestSpecification spec;
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void setUp(){
+        System.out.println("BeforeMethod запущен для: " + this.getClass().getSimpleName());
         spec = new RequestSpecBuilder().
                 setBaseUri("https://restful-booker.herokuapp.com")
                 .addFilter(new AllureRestAssured()) // 👈 ключевая строка
@@ -36,8 +37,12 @@ public class BaseTest {
         body.put("additionalneeds", "Baby crib");
 
         // Get response
-        Response response = RestAssured.given(spec).contentType(ContentType.JSON).body(body.toString())
+        return RestAssured.given(spec).contentType(ContentType.JSON).body(body.toString())
                 .post("/booking");
-        return response;
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void tearDown(){
+        RestAssured.reset();
     }
 }

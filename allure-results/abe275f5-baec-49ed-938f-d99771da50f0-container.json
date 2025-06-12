@@ -1,0 +1,1 @@
+{"uuid":"abe275f5-baec-49ed-938f-d99771da50f0","name":"com.herocuapp.restfulbooker.GetBookingsTest","children":["7f931688-84b4-45cb-8ac1-c48be69572ee"],"befores":[{"name":"setUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1749742323088,"stop":1749742323089}],"afters":[],"start":1749742318559,"stop":1749742326010}
