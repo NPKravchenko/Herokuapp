@@ -6,12 +6,13 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.json.JSONObject;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import io.qameta.allure.restassured.AllureRestAssured;
 
 public class BaseTest {
     protected RequestSpecification spec;
-    @BeforeMethod
+    @BeforeClass
     public void setUp(){
         spec = new RequestSpecBuilder().
                 setBaseUri("https://restful-booker.herokuapp.com")
