@@ -29,16 +29,24 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Run tests with Maven
+      - name: Install Allure Commandline
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y allure
+
+      - name: Run tests with Maven (generate allure results)
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
-            mvn clean test
+            mvn clean test allure:report
           else
-            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}"
+            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}" allure:report
           fi
 
-      - name: Generate Allure Report
-        run: mvn allure:report
+      - name: Upload Allure Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: target/allure-results
 
       - name: Upload Allure Report
         uses: actions/upload-artifact@v4
