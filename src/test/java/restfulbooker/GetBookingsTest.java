@@ -30,7 +30,7 @@ public class GetBookingsTest extends BaseTest {
         Assert.assertFalse(bookingIds.isEmpty(), "List of booking are empty, but it should not be");
     }
 
-    @Test(description = "Получение ID бронирований с фильтром по имени и фамилии")
+    @Test(groups = {"Booking", "Regression"})
     @Story("Получение списка бронирований с параметрами firstname и lastname")
     @Severity(SeverityLevel.NORMAL)
     @Description("Проверяется, что запрос к /booking с фильтрами firstname= Dmitry и lastname= Shyshkin возвращает статус 200 и непустой список ID бронирований")

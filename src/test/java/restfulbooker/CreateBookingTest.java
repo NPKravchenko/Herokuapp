@@ -53,8 +53,7 @@ public class CreateBookingTest extends BaseTest {
         softAssert.assertAll();
     }
 
-
-    @Test(description = "Создание бронирования и проверка всех полей через JSON путь")
+    @Test(groups = {"Booking", "Smoke"})
     @Epic("Booking API")
     @Feature("Create Booking")
     @Story("Создание нового бронирования")

@@ -16,6 +16,7 @@ import static io.restassured.RestAssured.given;
 @Listeners({io.qameta.allure.testng.AllureTestNg.class})
 @Epic("Health API")
 @Feature("Health Check")
+@Test(groups = {"Health"})
 public class HealthCheckTest extends BaseTest {
     @Test(description = "Проверка работоспособности API /ping")
     @Story("Проверка статуса сервиса")

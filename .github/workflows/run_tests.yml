@@ -1,13 +1,23 @@
 name: Run API Tests with Allure Report
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      test_group:
+        description: 'Выбери группу тестов для запуска'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - Health
+          - Booking
+          - Smoke
+          - Regression
+          - API
 
 jobs:
-  test:
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,8 +30,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Maven and run tests
-        run: mvn clean test
+      - name: Run tests with Maven
+        run: |
+          if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
+            mvn clean test
+          else
+            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}"
+          fi
 
       - name: Generate Allure Report
         run: mvn allure:report
