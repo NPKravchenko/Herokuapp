@@ -1,4 +1,4 @@
-name: Run API Tests and Publish Allure Report
+name: Run API Tests and Publish Allure Report with History
 
 on:
   workflow_dispatch:
@@ -34,7 +34,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y allure
 
-      - name: Run tests and generate Allure results
+      - name: Fetch gh-pages branch for history
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages
+        continue-on-error: true
+
+      - name: Copy history from previous report (if exists)
+        run: |
+          mkdir -p target/allure-results/history
+          cp -r gh-pages/history target/allure-results/ || true
+
+      - name: Run tests (allow failures)
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
             mvn clean test || true
@@ -43,8 +55,12 @@ jobs:
           fi
 
       - name: Generate Allure report
+        run: mvn allure:report
+
+      - name: Copy new history into report
         run: |
-          mvn allure:report
+          mkdir -p target/site/allure-maven-plugin/history
+          cp -r target/allure-results/history target/site/allure-maven-plugin/ || true
 
       - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -52,6 +68,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./target/site/allure-maven-plugin
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-
