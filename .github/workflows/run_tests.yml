@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       test_group:
-        description: 'Select test you want to execute'
+        description: 'Select test group to execute'
         required: true
         default: 'all'
         type: choice
@@ -29,27 +29,32 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Allure Commandline
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y allure
-
-      - name: Run tests with Maven (generate allure results)
+      - name: Run Tests and Generate Allure Results
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
-            mvn clean test allure:report
+            mvn clean test
           else
-            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}" allure:report
+            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}"
           fi
 
-      - name: Upload Allure Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
-          path: target/allure-results
+      - name: Check if Allure Results Exist
+        run: |
+          echo "Listing contents of target/allure-results"
+          ls -la target/allure-results || echo "No allure-results directory found!"
 
-      - name: Upload Allure Report
-        uses: actions/upload-artifact@v4
+      - name: Generate Allure Report
+        run: mvn allure:report
+
+      - name: Check if Allure Report Was Generated
+        run: |
+          echo "Listing contents of target/site/allure-maven-plugin"
+          ls -la target/site/allure-maven-plugin
+
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          name: allure-report
-          path: target/site/allure-maven-plugin
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/allure-maven-plugin
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
