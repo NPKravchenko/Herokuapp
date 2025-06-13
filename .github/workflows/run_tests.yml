@@ -29,27 +29,23 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Allure Commandline
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y allure
-
-      - name: Run tests with Maven (generate allure results)
+      - name: Run tests and generate Allure report
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
-            mvn clean test allure:report
+            mvn clean test
           else
-            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}" allure:report
+            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}"
           fi
+          mvn allure:report
 
-      - name: Generate Allure Report
-        run: mvn allure:report
+      - name: List Allure Report Files
+        run: ls -la target/site/allure-maven-plugin
 
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./target/site/allure-maven-plugin
-            publish_branch: gh-pages
-            user_name: 'github-actions[bot]'
-            user_email: 'github-actions[bot]@users.noreply.github.com'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/allure-maven-plugin
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'

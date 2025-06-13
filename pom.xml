@@ -82,7 +82,14 @@
                     <testFailureIgnore>false</testFailureIgnore>
                     <systemPropertyVariables>
                         <allure.results.directory>target/allure-results</allure.results.directory>
+                        <listener>io.qameta.allure.testng.AllureTestNg</listener>
                     </systemPropertyVariables>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>io.qameta.allure.testng.AllureTestNg</value>
+                        </property>
+                    </properties>
 <!--                    <groups>Booking,Smoke,Regression,Health</groups>-->
 <!--                    <suiteXmlFiles>-->
 <!--                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>-->
