@@ -1,10 +1,10 @@
-name: Run API Tests and Publish Allure Report with History
+name: Run API Tests with Allure Report and History
 
 on:
   workflow_dispatch:
     inputs:
       test_group:
-        description: 'Select test group to run'
+        description: 'Select test group'
         required: true
         default: 'all'
         type: choice
@@ -34,37 +34,32 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y allure
 
-      - name: Fetch gh-pages branch for history
+      - name: Download previous report from gh-pages
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages
         continue-on-error: true
 
-      - name: Copy history from previous report (if exists)
+      - name: Copy history if exists
         run: |
           mkdir -p target/allure-results/history
-          cp -r gh-pages/history target/allure-results/ || true
+          cp -r gh-pages/history/* target/allure-results/history/ || echo "No previous history"
 
-      - name: Run tests (allow failures)
+      - name: Run tests and generate allure results
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
-            mvn clean test || true
+            mvn clean test
           else
-            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}" || true
+            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}"
           fi
 
       - name: Generate Allure report
-        run: mvn allure:report
+        run: allure generate target/allure-results --clean -o target/allure-report
 
-      - name: Copy new history into report
-        run: |
-          mkdir -p target/site/allure-maven-plugin/history
-          cp -r target/allure-results/history target/site/allure-maven-plugin/ || true
-
-      - name: Deploy Allure report to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/allure-report
           publish_branch: gh-pages
-          publish_dir: ./target/site/allure-maven-plugin
