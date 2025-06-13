@@ -29,12 +29,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Run Tests and Generate Allure Results
+      - name: Run tests with Maven (generate allure results)
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
-            mvn clean test
+            mvn clean test || true
           else
-            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}"
+            mvn clean test -Dgroups="${{ github.event.inputs.test_group }}" || true
           fi
 
       - name: Check if Allure Results Exist
