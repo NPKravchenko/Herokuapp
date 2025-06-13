@@ -1,8 +1,2 @@
 "Epic","Feature","Story","FAILED","BROKEN","PASSED","SKIPPED","UNKNOWN"
-"Booking API","Partial Update Booking","Partial update","0","0","1","0","0"
-"Booking API","Create Booking","Create new booking","0","0","1","0","0"
 "Health API","Health Check","Check service status","0","0","1","0","0"
-"Booking API","Delete Booking","Delete existed booking based on ID","0","0","1","0","0"
-"Booking API","Get Bookings","Get list of bookings","0","0","1","0","0"
-"Booking API","Update Booking","Update booking","0","0","1","0","0"
-"Booking API","Get Booking","Get one booking","0","0","1","0","0"
