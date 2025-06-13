@@ -1,10 +1,10 @@
-name: Run API Tests with Allure Report
+name: Run API Tests and Publish Allure Report
 
 on:
   workflow_dispatch:
     inputs:
       test_group:
-        description: 'Select test group to execute'
+        description: 'Select test group to run'
         required: true
         default: 'all'
         type: choice
@@ -16,7 +16,7 @@ on:
           - Regression
 
 jobs:
-  run-tests:
+  test-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +29,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Run tests with Maven (generate allure results)
+      - name: Install Allure commandline
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y allure
+
+      - name: Run tests and generate Allure results
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
             mvn clean test || true
@@ -37,24 +42,16 @@ jobs:
             mvn clean test -Dgroups="${{ github.event.inputs.test_group }}" || true
           fi
 
-      - name: Check if Allure Results Exist
+      - name: Generate Allure report
         run: |
-          echo "Listing contents of target/allure-results"
-          ls -la target/allure-results || echo "No allure-results directory found!"
+          mvn allure:report
 
-      - name: Generate Allure Report
-        run: mvn allure:report
-
-      - name: Check if Allure Report Was Generated
-        run: |
-          echo "Listing contents of target/site/allure-maven-plugin"
-          ls -la target/site/allure-maven-plugin
-
-      - name: Deploy Allure Report to GitHub Pages
+      - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/site/allure-maven-plugin
           publish_branch: gh-pages
+          publish_dir: ./target/site/allure-maven-plugin
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
+
