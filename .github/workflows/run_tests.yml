@@ -1,10 +1,10 @@
-name: Run API Tests with Allure Report and History
+name: Run API Tests with Allure Report
 
 on:
   workflow_dispatch:
     inputs:
       test_group:
-        description: 'Select test group'
+        description: 'Select test group to run'
         required: true
         default: 'all'
         type: choice
@@ -16,7 +16,7 @@ on:
           - Regression
 
 jobs:
-  test-and-publish:
+  test-and-report:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,25 +29,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Allure CLI
+      - name: Set up Allure CLI
         run: |
-          sudo apt-add-repository -y ppa:qameta/allure
-          sudo apt-get update
-          sudo apt-get install -y allure
+          wget https://github.com/allure-framework/allure2/releases/download/2.24.0/allure-2.24.0.tgz
+          tar -zxvf allure-2.24.0.tgz
+          sudo mv allure-2.24.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
 
-      - name: Download previous report from gh-pages
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git clone --branch gh-pages https://github.com/${{ github.repository }} gh-pages
-        continue-on-error: true
-
-      - name: Copy history if exists
-        run: |
-          mkdir -p target/allure-results/history
-          cp -r gh-pages/history/* target/allure-results/history/ || echo "No previous history"
-
-      - name: Run tests and generate allure results
+      - name: Run tests with Maven
         run: |
           if [ "${{ github.event.inputs.test_group }}" == "all" ]; then
             mvn clean test
@@ -55,12 +44,26 @@ jobs:
             mvn clean test -Dgroups="${{ github.event.inputs.test_group }}"
           fi
 
-      - name: Generate Allure report
-        run: allure generate target/allure-results --clean -o target/allure-report
+      - name: Checkout gh-pages branch to get history
+        run: |
+          git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }} gh-pages
 
-      - name: Deploy to GitHub Pages
+      - name: Copy history from previous report
+        run: |
+          if [ -d gh-pages/history ]; then
+            mkdir -p target/allure-results/history
+            cp -r gh-pages/history/* target/allure-results/history/
+          fi
+
+      - name: Generate Allure Report with CLI
+        run: |
+          allure generate target/allure-results --clean -o target/allure-report
+
+      - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/allure-report
           publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
