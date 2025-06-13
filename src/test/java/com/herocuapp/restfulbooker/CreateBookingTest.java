@@ -11,7 +11,7 @@ import io.qameta.allure.*;
 
 @Listeners({io.qameta.allure.testng.AllureTestNg.class})
 public class CreateBookingTest extends BaseTest {
-    @Test(groups = {"Booking", "Smoke"})
+    @Test(groups = {"Booking", "Smoke", "Regression"})
     @Epic("Booking API")
     @Feature("Create Booking")
     @Story("Create new booking")

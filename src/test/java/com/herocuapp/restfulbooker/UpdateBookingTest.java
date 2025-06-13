@@ -61,7 +61,7 @@ public class UpdateBookingTest extends BaseTest{
         softAssert.assertEquals(actualFirstName, "Olga", "firstname in response is not expected");
 
         String actualLastName = responseUpdate.jsonPath().getString("lastname");
-        softAssert.assertEquals(actualLastName, "Shyshkin", "lastname in response is not expected");
+        softAssert.assertEquals(actualLastName, "Shyshkin_wromg", "lastname in response is not expected");
 
         int price = responseUpdate.jsonPath().getInt("totalprice");
         softAssert.assertEquals(price, 125, "totalprice in response is not expected");

@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 @Feature("Delete Booking")
 public class DeleteBookingTest extends BaseTest {
 
-    @Test(groups = {"Booking", "Smoke"})
+    @Test(groups = {"Booking", "Smoke", "Regression"})
     @Story("Delete existed booking based on ID")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Deletes booking and checking that it is deleted")
